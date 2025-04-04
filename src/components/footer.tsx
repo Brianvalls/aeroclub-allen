@@ -10,7 +10,7 @@ export default function Footer() {
           {/* Logo and Description */}
           <div className="col-span-1">
             <div className="flex items-center gap-2 mb-4">
-              <Image src="/images/logo.svg" alt="Aeroclub Allen Logo" width={40} height={40} className="w-10 h-10" />
+              <Image src="/images/logo.png" alt="Aeroclub Allen Logo" width={40} height={40} className="w-10 h-10" />
               <span className="text-xl font-bold">Aeroclub Allen</span>
             </div>
             <p className="text-gray-400 mb-4">

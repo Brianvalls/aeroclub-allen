@@ -1,147 +1,245 @@
 "use client"
-
 import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { ChevronLeft, ChevronRight } from "lucide-react"
 import Image from "next/image"
+import { cn } from "@/lib/utils"
+import { ChevronLeft, ChevronRight } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
-const slides = [
+const aviationItems = [
   {
     id: 1,
-    image: "/images/Carousel1.jpg",
-    title: "Nuestra Historia",
-    description:
-      "Fundado en 1950, el Aeroclub Allen ha sido pionero en la formación de pilotos en la región, contribuyendo al desarrollo de la aviación civil en Argentina.",
+    title: "Nuestra Flota",
+    description: "Aviones modernos y bien mantenidos para tu entrenamiento y vuelos recreativos.",
+    image: "/images/hero2.jpg",
+    link: "/flota",
   },
   {
     id: 2,
-    image: "/images/Carousel2.jpg",
-    title: "Nuestras Instalaciones",
-    description:
-      "Contamos con modernas instalaciones, hangar propio, aulas equipadas con tecnología de punta y una flota de aeronaves en excelente estado.",
+    title: "Instalaciones",
+    description: "Hangares, aulas y simuladores equipados con la última tecnología para tu formación.",
+    image: "/images/hero2.jpg",
+    link: "/#nosotros",
   },
   {
     id: 3,
-    image: "/images/Carousel3.jpg",
-    title: "Nuestro Equipo",
-    description:
-      "Nuestro staff está compuesto por instructores con amplia experiencia en vuelo y enseñanza, comprometidos con la excelencia y la seguridad.",
+    title: "Instructores",
+    description: "Profesionales con miles de horas de experiencia en formación de pilotos.",
+    image: "/images/hero2.jpg",
+    link: "/#carreras",
+  },
+  {
+    id: 4,
+    title: "Vistas Aéreas",
+    description: "Disfruta de los paisajes más impresionantes de la Patagonia desde el aire.",
+    image: "/images/hero2.jpg",
+    link: "/#paseos",
   },
 ]
 
-export default function AboutUs() {
-  const [current, setCurrent] = useState(0)
-  const [isAutoplay, setIsAutoplay] = useState(true)
-  const autoplayRef = useRef<NodeJS.Timeout | null>(null)
+const AviationCarousel = () => {
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [direction, setDirection] = useState<number>(0)
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true)
+  const autoPlayRef = useRef<NodeJS.Timeout | null>(null)
 
-  const nextSlide = () => {
-    setCurrent(current === slides.length - 1 ? 0 : current + 1)
-  }
-
-  const prevSlide = () => {
-    setCurrent(current === 0 ? slides.length - 1 : current - 1)
-  }
-
-  const goToSlide = (index: number) => {
-    setCurrent(index)
+  // Configuración de auto-play
+  const startAutoPlay = () => {
+    if (autoPlayRef.current) clearInterval(autoPlayRef.current)
+    autoPlayRef.current = setInterval(() => {
+      handleNext()
+    }, 5000)
   }
 
   useEffect(() => {
-    if (isAutoplay) {
-      autoplayRef.current = setInterval(() => {
-        nextSlide()
-      }, 5000)
+    if (isAutoPlaying) {
+      startAutoPlay()
     }
-
     return () => {
-      if (autoplayRef.current) {
-        clearInterval(autoplayRef.current)
-      }
+      if (autoPlayRef.current) clearInterval(autoPlayRef.current)
     }
-  }, [current, isAutoplay])
+  }, [isAutoPlaying, currentIndex])
 
-  const handleMouseEnter = () => {
-    setIsAutoplay(false)
+  // Manejo de navegación
+  const handleNext = () => {
+    setDirection(1)
+    setCurrentIndex((prev) => (prev + 1) % aviationItems.length)
+    resetAutoPlay()
   }
 
-  const handleMouseLeave = () => {
-    setIsAutoplay(true)
+  const handlePrev = () => {
+    setDirection(-1)
+    setCurrentIndex((prev) => (prev - 1 + aviationItems.length) % aviationItems.length)
+    resetAutoPlay()
+  }
+
+  const handleDotClick = (index: number) => {
+    setDirection(index > currentIndex ? 1 : -1)
+    setCurrentIndex(index)
+    resetAutoPlay()
+  }
+
+  const resetAutoPlay = () => {
+    setIsAutoPlaying(false)
+    if (autoPlayRef.current) clearInterval(autoPlayRef.current)
+    setTimeout(() => {
+      setIsAutoPlaying(true)
+    }, 8000)
+  }
+
+  // Variantes de animación
+  const slideVariants = {
+    enter: (direction: number) => ({
+      x: direction > 0 ? "100%" : "-100%",
+      opacity: 0.5,
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+      transition: {
+        x: { type: "spring", stiffness: 300, damping: 30 },
+        opacity: { duration: 0.5 }
+      }
+    },
+    exit: (direction: number) => ({
+      x: direction < 0 ? "100%" : "-100%",
+      opacity: 0,
+      transition: {
+        x: { type: "spring", stiffness: 300, damping: 30 },
+        opacity: { duration: 0.3 }
+      }
+    }),
+  }
+
+  const contentVariants = {
+    hidden: { y: 50, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        delay: 0.3,
+        duration: 0.6,
+        ease: "easeOut"
+      }
+    }
   }
 
   return (
-    <section id="nosotros" className="py-20 bg-white">
+    <section id="nosotros" className="w-full py-20 bg-gradient-to-b from-slate-50 to-white">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
+        <div className="text-center mb-16">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            viewport={{ once: true }}
-            className="text-3xl md:text-4xl font-bold mb-4"
+            className="text-4xl md:text-5xl font-bold mb-3"
           >
-            Sobre Nosotros
+            Vive la Experiencia de Volar
           </motion.h2>
-          <motion.p
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            viewport={{ once: true }}
-            className="text-gray-600 max-w-2xl mx-auto"
+            className="relative inline-block"
           >
-            Más de 70 años formando pilotos y promoviendo la aviación civil en la Patagonia Argentina.
-          </motion.p>
+            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+              Descubre lo que hace único a nuestro aeroclub a través de imágenes inolvidables
+            </p>
+            <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-blue-500 rounded-full"></div>
+          </motion.div>
         </div>
 
-        <div
-          className="relative max-w-5xl mx-auto h-[500px] rounded-xl overflow-hidden"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={current}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.5 }}
-              className="absolute inset-0"
-            >
-              <Image
-                src={slides[current].image || "/placeholder.svg"}
-                alt={slides[current].title}
-                fill
-                className="object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-8">
-                <h3 className="text-2xl font-bold text-white mb-2">{slides[current].title}</h3>
-                <p className="text-gray-200 max-w-2xl">{slides[current].description}</p>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-
-          {/* Navigation Arrows */}
-          <button
-            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 rounded-full p-2 backdrop-blur-sm transition-colors"
-            onClick={prevSlide}
+        {/* Contenedor principal del carrusel */}
+        <div className="relative max-w-5xl mx-auto">
+          {/* Flecha izquierda externa */}
+          <motion.button
+            onClick={handlePrev}
+            className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-12 bg-white/80 hover:bg-white backdrop-blur-sm rounded-full p-3 text-gray-800 z-10 shadow-lg"
+            aria-label="Anterior"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
           >
-            <ChevronLeft className="text-white" size={24} />
-          </button>
-          <button
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 rounded-full p-2 backdrop-blur-sm transition-colors"
-            onClick={nextSlide}
-          >
-            <ChevronRight className="text-white" size={24} />
-          </button>
+            <ChevronLeft size={28} />
+          </motion.button>
 
-          {/* Dots */}
-          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
-            {slides.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => goToSlide(index)}
-                className={`w-3 h-3 rounded-full transition-colors ${current === index ? "bg-white" : "bg-white/50"}`}
-              />
-            ))}
+          {/* Carrusel */}
+          <div className="relative h-[400px] md:h-[500px] rounded-xl overflow-hidden shadow-xl">
+            <AnimatePresence initial={false} custom={direction} mode="popLayout">
+              <motion.div
+                key={currentIndex}
+                custom={direction}
+                variants={slideVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                className="absolute inset-0 w-full h-full"
+              >
+                <Image
+                  src={aviationItems[currentIndex].image || "/placeholder.svg"}
+                  alt={aviationItems[currentIndex].title}
+                  fill
+                  className="object-cover"
+                  priority={true}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+
+                <motion.div
+                  className="absolute bottom-0 left-0 p-8 md:p-12 w-full"
+                  variants={contentVariants}
+                  initial="hidden"
+                  animate="visible"
+                >
+                  <h3 className="text-3xl md:text-4xl font-bold text-white mb-3">
+                    {aviationItems[currentIndex].title}
+                  </h3>
+                  <p className="text-lg md:text-xl text-gray-200 mb-6 max-w-2xl">
+                    {aviationItems[currentIndex].description}
+                  </p>
+                  <Button
+                    variant="outline"
+                    className="bg-transparent border-white text-white hover:bg-white/20 transition-colors duration-300"
+                  >
+                    Explorar
+                  </Button>
+                </motion.div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          {/* Flecha derecha externa */}
+          <motion.button
+            onClick={handleNext}
+            className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-12 bg-white/80 hover:bg-white backdrop-blur-sm rounded-full p-3 text-gray-800 z-10 shadow-lg"
+            aria-label="Siguiente"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <ChevronRight size={28} />
+          </motion.button>
+
+          {/* Indicadores circulares */}
+          <div className="flex justify-center mt-8">
+            <div className="flex space-x-3 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm">
+              {aviationItems.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleDotClick(index)}
+                  className={cn(
+                    "w-3 h-3 rounded-full transition-all duration-300 relative",
+                    currentIndex === index ? "bg-blue-600" : "bg-gray-300 hover:bg-gray-400"
+                  )}
+                  aria-label={`Ir a la diapositiva ${index + 1}`}
+                >
+                  {currentIndex === index && (
+                    <motion.span
+                      className="absolute inset-0 bg-blue-600 rounded-full"
+                      layoutId="activeDot"
+                      transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                    />
+                  )}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -149,3 +247,4 @@ export default function AboutUs() {
   )
 }
 
+export default AviationCarousel

@@ -65,5 +65,23 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Animación para las líneas de vuelo */
+.path-animation {
+  stroke-dasharray: 1500;
+  stroke-dashoffset: 1500;
+  animation: dash 15s linear infinite;
+}
+
+@keyframes dash {
+  0% {
+    stroke-dashoffset: 1500;
+  }
+  50% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -1500;
+  }
+}
 
 

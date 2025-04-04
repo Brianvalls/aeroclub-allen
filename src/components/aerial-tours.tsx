@@ -32,7 +32,7 @@ const tours = [
     title: "Aventura Patagónica",
     description:
       "Vuela sobre los impresionantes paisajes patagónicos, con vistas a la cordillera y los lagos de la región.",
-    image: "/images/Tour3.jpg",
+    image: "/images/Tour2.jpg",
     duration: "60 minutos",
     capacity: "2 personas",
     location: "Región Patagónica",

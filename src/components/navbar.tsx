@@ -1,66 +1,95 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { Menu, X, ChevronDown } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { motion, AnimatePresence } from "framer-motion"
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import Image from "next/image";
+import { ChevronDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const navItems = [
   { name: "Inicio", href: "/" },
-  { name: "Carreras", href: "/#carreras" },
-  { name: "Nosotros", href: "/#nosotros" },
-  { name: "Paseos Aéreos", href: "/#paseos" },
+  { name: "Carreras", href: "/careers" },
+  { name: "Paseos Aéreos", href: "/paseos" },
+  { name: "Flota", href: "/flota" },
+  { name: "Eventos", href: "/eventos" },
   {
     name: "Más",
     children: [
-      { name: "Flota", href: "/flota" },
-      { name: "Eventos", href: "/eventos" },
+      { name: "Nosotros", href: "/#nosotros" },
+      { name: "Contacto", href: "/#contacto" },
     ],
   },
-  { name: "Contacto", href: "/#contacto" },
-]
+];
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
-  const [dropdownOpen, setDropdownOpen] = useState(false)
+  const pathname = usePathname();
+  const [scrolled, setScrolled] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const isHomePage = pathname === "/";
 
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 50) {
-        setScrolled(true)
+        setScrolled(true);
       } else {
-        setScrolled(false)
+        setScrolled(false);
       }
+    };
+
+    // Solo agregar el event listener si estamos en la página principal
+    if (isHomePage) {
+      window.addEventListener("scroll", handleScroll);
+    } else {
+      // En otras páginas, la navbar siempre está visible
+      setScrolled(true);
     }
 
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+    return () => {
+      if (isHomePage) {
+        window.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, [isHomePage]);
+
+  // Estilos base para la navbar
+  const baseStyles = "fixed top-0 left-0 right-0 z-50 transition-all duration-300";
+
+  // Estilos condicionales
+  const navbarStyles = isHomePage
+    ? scrolled
+      ? "bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-md"
+      : "bg-transparent"
+    : "bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-md";
+
+  // Estilos para el texto y elementos
+  const textColor = (isHomePage && !scrolled) ? "text-white" : "text-gray-700 dark:text-gray-200";
+  const hoverColor = (isHomePage && !scrolled) ? "hover:text-gray-200" : "hover:text-blue-500";
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-md" : "bg-transparent"
-      }`}
-    >
-      <nav className="container mx-auto px-4 py-4 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2">
-          <Image src="/images/logo.svg" alt="Aeroclub Allen Logo" width={40} height={40} className="w-10 h-10" />
-          <span className={`text-xl font-bold ${scrolled ? "text-blue-600" : "text-white"}`}>Aeroclub Allen</span>
-        </Link>
+    <header className={`${baseStyles} ${navbarStyles}`}>
+      <nav className="w-full py-4 flex items-center justify-between">
+        {/* Logo y nombre */}
+        <div className="flex items-center gap-10 pl-10">
+          <Image
+            src="/images/logo.png"
+            alt="Aeroclub Allen Logo"
+            width={40}
+            height={40}
+            className="w-10 h-10"
+          />
+          <span className={`text-xl font-bold ${textColor}`}>
+            Aeroclub Allen
+          </span>
+        </div>
 
-        {/* Desktop Navigation */}
+        {/* Menú de navegación */}
         <div className="hidden md:flex items-center gap-6">
           {navItems.map((item) =>
             item.children ? (
               <div key={item.name} className="relative">
                 <button
-                  className={`text-sm font-medium hover:text-blue-500 transition-colors flex items-center gap-1 ${
-                    scrolled ? "text-gray-700 dark:text-gray-200" : "text-white"
-                  }`}
+                  className={`text-sm font-medium ${textColor} ${hoverColor} transition-colors flex items-center gap-1`}
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                 >
                   {item.name}
@@ -85,85 +114,31 @@ export default function Navbar() {
               <Link
                 key={item.name}
                 href={item.href}
-                className={`text-sm font-medium hover:text-blue-500 transition-colors ${
-                  scrolled ? "text-gray-700 dark:text-gray-200" : "text-white"
-                }`}
+                className={`text-sm font-medium ${textColor} ${hoverColor} transition-colors`}
               >
                 {item.name}
               </Link>
-            ),
+            )
           )}
-          <Button>Inscribirse</Button>
         </div>
 
-        {/* Mobile Navigation Toggle */}
-        <button
-          className="md:hidden text-gray-700 dark:text-gray-200"
-          onClick={() => setIsOpen(!isOpen)}
-          aria-label="Toggle menu"
-        >
-          {isOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-      </nav>
-
-      {/* Mobile Navigation Menu */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white dark:bg-gray-900 shadow-lg"
+        {/* Botones de acción */}
+        <div className="hidden md:flex items-center gap-4 pr-10">
+          <Button
+            variant="ghost"
+            className={`${textColor} ${hoverColor.replace('text-', 'hover:bg-')}`}
+            asChild
           >
-            <div className="container mx-auto px-4 py-4 flex flex-col gap-4">
-              {navItems.map((item) =>
-                item.children ? (
-                  <div key={item.name} className="flex flex-col gap-2">
-                    <button
-                      className="text-gray-700 dark:text-gray-200 py-2 hover:text-blue-500 transition-colors flex items-center justify-between"
-                      onClick={() => setDropdownOpen(!dropdownOpen)}
-                    >
-                      {item.name}
-                      <ChevronDown
-                        size={16}
-                        className={dropdownOpen ? "rotate-180 transition-transform" : "transition-transform"}
-                      />
-                    </button>
-                    {dropdownOpen && (
-                      <div className="pl-4 flex flex-col gap-2 border-l-2 border-gray-200 dark:border-gray-700">
-                        {item.children.map((child) => (
-                          <Link
-                            key={child.name}
-                            href={child.href}
-                            className="text-gray-700 dark:text-gray-200 py-2 hover:text-blue-500 transition-colors"
-                            onClick={() => {
-                              setDropdownOpen(false)
-                              setIsOpen(false)
-                            }}
-                          >
-                            {child.name}
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className="text-gray-700 dark:text-gray-200 py-2 hover:text-blue-500 transition-colors"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {item.name}
-                  </Link>
-                ),
-              )}
-              <Button className="w-full">Inscribirse</Button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            <Link href="/iniciar-sesion">Iniciar sesión</Link>
+          </Button>
+          <Button
+            className="bg-blue-600 text-white hover:bg-blue-700 border-blue-600"
+            asChild
+          >
+            <Link href="/crear-cuenta">Crear cuenta</Link>
+          </Button>
+        </div>
+      </nav>
     </header>
-  )
+  );
 }
-
