@@ -77,7 +77,7 @@ const careers = [
       },
       {
         name: "Facundo Preiss",
-        text: "Muy bueno man.",
+        text: "Tienen muy buenos aviones.",
         role: "Piloto Privado",
       },
     ],
@@ -140,7 +140,7 @@ const careers = [
       },
       {
         name: "Rodrigo Sepulveda",
-        text: "Ok.",
+        text: "El mejor aeroclub!.",
         role: "Piloto Comercial",
       },
     ],
@@ -257,7 +257,7 @@ export default function CareersSection() {
         >
           <div className="grid md:grid-cols-2 gap-0">
             <div className="relative h-[300px] md:h-auto">
-              <Image src="/images/hero2.jpg" alt="Instalaciones del Aeroclub Allen" fill className="object-cover" />
+              <Image src="/images/hero122.jpg" alt="Instalaciones del Aeroclub Allen" fill className="object-cover" />
               <div className="absolute inset-0 bg-gradient-to-r from-blue-900/70 to-transparent flex items-center justify-center">
                 <h3 className="text-3xl font-bold text-white px-6 text-center">¿Por qué elegirnos?</h3>
               </div>
@@ -328,19 +328,21 @@ export default function CareersSection() {
             <TabsContent key={career.id} value={career.id} className="mt-6 animate-in fade-in-50 duration-300">
               {/* Header con imagen */}
               <div className="relative h-[300px] md:h-[400px] rounded-xl overflow-hidden mb-12">
-                <Image
-                  src={career.image || "/placeholder.svg"}
-                  alt={career.title}
-                  fill
-                  className="object-cover"
-                  priority
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end p-8">
-                  <span className="text-blue-300 font-medium mb-2">{career.subtitle}</span>
-                  <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">{career.title}</h2>
-                  <p className="text-gray-200 max-w-3xl">{career.description}</p>
-                </div>
-              </div>
+  <Image
+    src={career.image || "/placeholder.svg"}
+    alt={career.title}
+    fill
+    className="object-cover"
+    priority
+  />
+  {/* Fondo negro con opacidad */}
+  <div className="absolute inset-0 bg-black/30"></div>
+  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end p-8">
+    <span className="text-blue-300 font-medium mb-2">{career.subtitle}</span>
+    <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">{career.title}</h2>
+    <p className="text-gray-200 max-w-3xl">{career.description}</p>
+  </div>
+</div>
 
               {/* Información principal */}
               <div className="grid md:grid-cols-3 gap-6 mb-12">

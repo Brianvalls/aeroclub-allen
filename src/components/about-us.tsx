@@ -132,7 +132,8 @@ const AviationCarousel = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="text-4xl md:text-5xl font-bold mb-3"
+            viewport={{ once: true }}
+            className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-blue-600 mb-6"
           >
             Vive la Experiencia de Volar
           </motion.h2>
@@ -142,7 +143,7 @@ const AviationCarousel = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="relative inline-block"
           >
-            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+            <p className="text-gray-700 max-w-3xl mx-auto text-lg md:text-xl lg:text-2xl leading-relaxed">
               Descubre lo que hace único a nuestro aeroclub a través de imágenes inolvidables
             </p>
             <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-blue-500 rounded-full"></div>

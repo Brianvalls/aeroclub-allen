@@ -55,11 +55,14 @@ const FAQItem = ({ faq, index }: { faq: { question: string; answer: string }; in
     >
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex justify-between items-center w-full py-5 px-4 text-left focus:outline-none"
+        className="flex justify-between items-center w-full py-4 md:py-5 px-3 md:px-4 text-left focus:outline-none"
       >
-        <h3 className="text-lg font-medium text-gray-900">{faq.question}</h3>
+        <h3 className="text-base md:text-lg font-medium text-blue-600 pr-2">{faq.question}</h3>
         <ChevronDown
-          className={cn("h-5 w-5 text-blue-500 transition-transform duration-300", isOpen && "transform rotate-180")}
+          className={cn(
+            "h-5 w-5 text-blue-500 transition-transform duration-300 flex-shrink-0",
+            isOpen && "transform rotate-180",
+          )}
         />
       </button>
       <motion.div
@@ -72,7 +75,7 @@ const FAQItem = ({ faq, index }: { faq: { question: string; answer: string }; in
         transition={{ duration: 0.3 }}
         className="overflow-hidden"
       >
-        <div className="px-4 pb-5 text-gray-600">{faq.answer}</div>
+        <div className="px-3 md:px-4 pb-4 md:pb-5 text-gray-600 text-sm md:text-base">{faq.answer}</div>
       </motion.div>
     </motion.div>
   )
@@ -80,15 +83,15 @@ const FAQItem = ({ faq, index }: { faq: { question: string; answer: string }; in
 
 export default function FAQSection() {
   return (
-    <section id="faq" className="py-20 bg-white">
+    <section id="faq" className="py-16 md:py-20 bg-white">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
+        <div className="text-center mb-8 md:mb-12">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
-            className="text-3xl md:text-4xl font-bold mb-4"
+            className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-blue-600 mb-8"
           >
             Preguntas Frecuentes
           </motion.h2>
@@ -97,7 +100,7 @@ export default function FAQSection() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
             viewport={{ once: true }}
-            className="text-gray-600 max-w-2xl mx-auto"
+            className="text-gray-700 max-w-3xl mx-auto text-lg md:text-xl lg:text-2xl leading-relaxed"
           >
             Encuentra respuestas a las dudas más comunes sobre nuestros cursos y servicios
           </motion.p>
