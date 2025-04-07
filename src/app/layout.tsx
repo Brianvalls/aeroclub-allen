@@ -8,8 +8,8 @@ import Footer from "@/components/footer"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Aeroclub Allen - Escuela de Vuelo",
-  description: "Escuela de vuelo y formación de pilotos en Allen, Río Negro, Argentina",
+  title: " Prototipo Aeroclub",
+  description: "Escuela de vuelo y formación de pilotos",
 }
 
 export default function RootLayout({
